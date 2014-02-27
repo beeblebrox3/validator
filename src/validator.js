@@ -30,7 +30,7 @@ function Validator(form, messages, onError, onSuccess) {
     this._messages = this._merge(defaultMessages, messages);
     this.onError = onError;
     this.onSuccess = onSuccess;
-    this.debug = true;
+    this.debug = false;
 }
 
 /**
@@ -278,7 +278,7 @@ Validator.prototype.rule_min = function (element, min) {
         return false;
     }
 
-    return element.value >= min;
+    return parseInt(element.value, 10) >= min;
 };
 
 /**
@@ -302,5 +302,5 @@ Validator.prototype.rule_max = function (element, max) {
         return false;
     }
 
-    return element.value <= max;
+    return parseInt(element.value, 10) <= max;
 };
