@@ -1,0 +1,6 @@
+node_modules
+nbproject
+.project
+.settings
+.idea
+*.komodoproject

@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Validator</title>
+        <meta charset="utf-8" />
+
+        <style>
+            .error {
+                border: 1px solid red;
+            }
+            .success {
+                border: 1px solid green;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <form novalidate>
+            <input type="email" required name="email" />
+            <input type="text" data-validation="numeric|min:11|max:33" value="aa11" required  />
+
+            <input type="submit" value="enviar" />
+        </form>
+
+
+
+        <script type="text/javascript" src="src/validator.js"></script>
+        <script type="text/javascript">
+            var form = document.forms[0];
+            var validator = new Validator(form, {}, function (errors) {
+                this.classList.add('error');
+                this.classList.remove('success');
+            }, function () {
+                this.classList.add('success');
+                this.classList.remove('error');
+            });
+            document.forms[0].onsubmit = function () {
+                validator.validate();
+                return false;
+            }
+        </script>
+    </body>
+</html>
