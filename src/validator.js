@@ -47,7 +47,8 @@ Validator.prototype.validate = function () {
         elements = this._elements,
         element = null,
         valid = true,
-        numElements = elements.length;
+        numElements = elements.length,
+        allValid = true;
 
     for (i = 0; i < numElements; i += 1) {
         element = elements[i];
@@ -68,6 +69,7 @@ Validator.prototype.validate = function () {
                     if (!valid) {
                         element.errors[rule] = this._messages[rule];
                         element.isValid = false;
+                        allValid = false;
                     }
                 }
             }
@@ -79,6 +81,8 @@ Validator.prototype.validate = function () {
             this.onSuccess.call(element.element);
         }
     }
+
+    return allValid;
 };
 
 /**
