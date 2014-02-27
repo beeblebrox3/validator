@@ -1,44 +1,55 @@
 <!doctype html>
 <html>
     <head>
-        <title>Validator</title>
+        <title>Validator - Demo page</title>
         <meta charset="utf-8" />
 
-        <style>
-            .error {
-                border: 1px solid red;
-            }
-            .success {
-                border: 1px solid green;
-            }
-        </style>
+        <meta name="viewport" content="width=device-width, user-scalable=no">
+
+        <link rel="stylesheet" href="css/demo.css" />
     </head>
 
     <body>
+        <div class="container">
+            <article>
+                <h1 id="modal">Validator</h1>
 
-        <form novalidate>
-            <input type="email" required name="email" />
-            <input type="text" data-validation="numeric|min:11|max:33" value="aa11" required  />
+                <h2>Demo</h2>
 
-            <input type="submit" value="enviar" />
-        </form>
+                <form novalidate>
+                    <label for="required">Required</label>
+                    <input type="text" id="required" required />
 
+                    <label for="length">Must have 3 caracteres</label>
+                    <input type="text" id="length" data-validation="length:3" required />
 
+                    <label for="numeric">Must be numeric</label>
+                    <input type="text" id="numeric" data-validation="numeric" required />
 
-        <script type="text/javascript" src="src/validator.js"></script>
-        <script type="text/javascript">
-            var form = document.forms[0];
-            var validator = new Validator(form, {}, function (errors) {
-                this.classList.add('error');
-                this.classList.remove('success');
-            }, function () {
-                this.classList.add('success');
-                this.classList.remove('error');
-            });
-            document.forms[0].onsubmit = function () {
-                validator.validate();
-                return false;
-            }
-        </script>
+                    <label for="alphanumeric">Must be alphanumeric</label>
+                    <input type="text" id="alphanumeric" data-validation="alphanumeric" required />
+
+                    <label for="letters">Must be only letters</label>
+                    <input type="text" id="letters" data-validation="alpha" required />
+
+                    <label for="greater7">Number >= 7</label>
+                    <input type="text" id="greater7" data-validation="numeric|min:7" required />
+
+                    <label for="minor7">Number <= 7</label>
+                    <input type="text" id="minor7" data-validation="numeric|max:7" required />
+
+                    <label for="between10121">Number between 10 and 121</label>
+                    <input type="text" id="between10121" data-validation="numeric|max:121|min:10" required />
+
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" required/>
+
+                    <button type="submit">Enviar</button>
+                </form>
+            </article>
+        </div>
+        
+        <script type="text/javascript" src="js/validator.js"></script>
+        <script type="text/javascript" src="js/demo.js"></script>
     </body>
 </html>
