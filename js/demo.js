@@ -5,7 +5,7 @@ var handleWithErrors = function (errors) {
 
 var handleWithSuccess = function () {
     this.classList.remove('error');
-    this.classList.addClass('success');
+    this.classList.add('success');
 };
 
 var form = document.forms[0];
