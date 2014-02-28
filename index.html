@@ -6,23 +6,132 @@
 
         <style>
             .error {
-                border: 1px solid red;
+                border-left: 3px solid red;
             }
             .success {
-                border: 1px solid green;
+                border-left: 3px solid green;
+            }
+            form label {
+                display: block;
+                font-weight: bold;
+            }
+            form input {
+                display: block;
+                width: 100%;
+                max-width: 500px;
+                border: 1px solid #ccc;
+                padding: 7px;
+                margin-bottom: 20px;
+                outline: none;
+            }
+            hr {
+                width: 100%;
+                max-width: 500px;
+                margin: 10px 0;
+            }
+            
+            .right {
+                background: #bdfec0;
+            }
+            [required] {
+                border-bottom: 1px solid gold;
             }
         </style>
     </head>
 
     <body>
 
+        <h3>TESTING</h3>
+        <p>Left border indicates result of the validation proccess.<br />
+            Background green indicates the inputs that must be valid<br />
+            Borderm-bottom indicates required inputs
+        </p>
+        
         <form novalidate>
-            <input type="email" required name="email" />
-            <input type="text" data-validation="numeric|max:7" value="5" required  />
-            <input type="text" data-validation="numeric|max:7" value="7" required  />
-            <input type="text" data-validation="numeric|max:7" value="100" required  />
+            <label>Required</label>
+            <input type="text" required value="hello world" class="right"/>
+            <input type="text" required value="" />
+            
+            <hr />
 
-            <input type="submit" value="enviar" />
+            <label>Must have 3 caracteres</label>
+            <input type="text" data-validation="length:3" required value="" />
+            <input type="text" data-validation="length:3" required value="1" />
+            <input type="text" data-validation="length:3" required value="333" class="right" />
+            <input type="text" data-validation="length:3" required value="4444" />
+            <input type="text" data-validation="length:3" class="right" placeholder="is not required"/>
+
+            <hr />
+            
+            <label>Must be numeric</label>
+            <input type="number" required />
+            <input type="number" required value="aa" />
+            <input type="number" required value="127" class="right" />
+            <input type="number" class="right" />
+
+            <hr />
+            
+            <label>Must be alphanumeric</label>
+            <input type="text" data-validation="alphanumeric" required value=" das asd" />
+            <input type="text" data-validation="alphanumeric" required value="sadasdas" class="right" />
+            <input type="text" data-validation="alphanumeric" required value="sadasd232as" class="right" />
+            <input type="text" data-validation="alphanumeric" required value="3222" class="right" />
+            <input type="text" data-validation="alphanumeric" required value=" das asd!" />
+            <input type="text" data-validation="alphanumeric" required value="@" />
+
+            <hr />
+            
+            <label>Must be only letters</label>
+            <input type="text" data-validation="alpha" required value=" das asd" />
+            <input type="text" data-validation="alpha" required value="sadasdas" class="right" />
+            <input type="text" data-validation="alpha" required value="sadasd232as" />
+            <input type="text" data-validation="alpha" required value="3222" />
+            <input type="text" data-validation="alpha" required value=" das asd!" />
+            <input type="text" data-validation="alpha" required value="@" />
+
+            <hr />
+            
+            <label>Number >= 7</label>
+            <input type="text" data-validation="min:7" value="" required />
+            <input type="text" data-validation="min:7" value="1" required />
+            <input type="text" data-validation="min:7" value="7" required class="right" />
+            <input type="text" data-validation="min:7" value="17" required class="right" />
+            
+
+            <hr />
+            
+            <label>Number <= 7</label>
+            <input type="text" data-validation="max:7" value="" required />
+            <input type="text" data-validation="max:7" value="1" required  class="right"/>
+            <input type="text" data-validation="max:7" value="7" required class="right" />
+            <input type="text" data-validation="max:7" value="17" required />
+
+            <hr />
+            
+            <label>Number between 10 and 121</label>
+            <input type="text" data-validation="numeric|max:121|min:10" value="" required />
+            <input type="text" data-validation="numeric|max:121|min:10" value="9" required />
+            <input type="text" data-validation="numeric|max:121|min:10" value="10" class="right" required />
+            <input type="text" data-validation="numeric|max:121|min:10" value="101" class="right" required />
+            <input type="text" data-validation="numeric|max:121|min:10" value="121" class="right" required />
+            <input type="text" data-validation="numeric|max:121|min:10" value="151" required />
+
+            <hr />
+            
+            <label>E-mail</label>
+            <input type="email" required value="sadasdasdas" />
+            <input type="email" required value="" />
+            <input type="email" required value="asdasdasd@google" />
+            <input type="email" required value="sadasdas@google.com" class="right" />
+            <input type="email" required value="sadasdas@google.c" />
+            <input type="email" required value="sadasda@s@google.com" />
+            <input type="email" required value="sada$sdas@google.com" />
+            <input type="email" required value="sada sdas@google.com" />
+            <input type="email" required value=" sadasdas@google.com" />
+            <input type="email" required value="sadasdas@google.com " />
+            <input type="email" required value="sad.asdas@google.com" class="right" />
+            
+            <button type="submit">Enviar</button>
         </form>
 
 
@@ -37,6 +146,9 @@
                 this.classList.add('success');
                 this.classList.remove('error');
             });
+            
+            validator.validate();
+            
             document.forms[0].onsubmit = function () {
                 validator.validate();
                 return false;

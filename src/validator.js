@@ -1,10 +1,11 @@
-/*jslint nomen: true */
+/*jslint browser: true, devel: true, nomen: true */
 
 /**
  * Validator
  * @param {object} form
  * @param {object} messages
  * @param {function} onError
+ * @param {function} onSuccess
  * @returns {Validator}
  */
 function Validator(form, messages, onError, onSuccess) {
@@ -26,6 +27,7 @@ function Validator(form, messages, onError, onSuccess) {
     };
 
     this._form = form;
+    this._form.setAttribute('novalidate', 'novalidate');
     this._elements = [];
     this._messages = this._merge(defaultMessages, messages);
     this.onError = onError;
@@ -55,21 +57,24 @@ Validator.prototype.validate = function () {
         element.errors = {};
         element.isValid = true;
 
-        for (rule in element.rules) {
-            if (element.rules.hasOwnProperty(rule)) {
-                if (typeof this['rule_' + rule] === 'function') {
-                    valid = this['rule_' + rule](element.element, element.rules[rule]);
+        // validar se estiver preenchido ou for required
+        if (element.element.value.length || element.rules.hasOwnProperty('notEmpty')) {
+            for (rule in element.rules) {
+                if (element.rules.hasOwnProperty(rule)) {
+                    if (typeof this['rule_' + rule] === 'function') {
+                        valid = this['rule_' + rule](element.element, element.rules[rule]);
 
-                    if (this.debug && valid) {
-                        console.log('SUCCESS field ' + i + ' rule ' + rule + ' with value ' + element.element.value);
-                    } else if (this.debug && !valid) {
-                        console.log('ERROR field ' + i + ' rule ' + rule + ' with value ' + element.element.value);
-                    }
+                        if (this.debug && valid) {
+                            console.log('SUCCESS field ' + i + ' rule ' + rule + ' with value ' + element.element.value);
+                        } else if (this.debug && !valid) {
+                            console.log('ERROR field ' + i + ' rule ' + rule + ' with value ' + element.element.value);
+                        }
 
-                    if (!valid) {
-                        element.errors[rule] = this._messages[rule];
-                        element.isValid = false;
-                        allValid = false;
+                        if (!valid) {
+                            element.errors[rule] = this._messages[rule];
+                            element.isValid = false;
+                            allValid = false;
+                        }
                     }
                 }
             }
@@ -135,6 +140,11 @@ Validator.prototype._merge = function (obj_a, obj_b) {
     return response;
 };
 
+/**
+ * 
+ * @param {object} element
+ * @returns {Validator.prototype@call;_merge}
+ */
 Validator.prototype._extractRules = function (element) {
     'use strict';
 
@@ -219,7 +229,8 @@ Validator.prototype.rule_notEmpty = function (element) {
  */
 Validator.prototype.rule_numeric = function (element) {
     'use strict';
-    return !isNaN(element.value);
+    var re = /^([0-9]){1,}$/;
+    return re.test(element.value);
 };
 
 /**
@@ -229,7 +240,9 @@ Validator.prototype.rule_numeric = function (element) {
  */
 Validator.prototype.rule_email = function (element) {
     'use strict';
-    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    // @todo what to do with spaces?
+    var re = /^([a-z0-9\.]){1,}@([a-z0-9]){1,}\.([a-z0-9]){2,3}$/i;
     return re.test(element.value);
 };
 
