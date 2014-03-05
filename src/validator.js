@@ -96,7 +96,7 @@ Validator.prototype.validate = function () {
 Validator.prototype._setupRules = function () {
     'use strict';
 
-    var elements = this._form.querySelectorAll('input:not([type="submit"])'),
+    var elements = this._form.querySelectorAll('input'),
         i = 0,
         numElements = elements.length,
         element = {};
@@ -105,6 +105,7 @@ Validator.prototype._setupRules = function () {
     this._elements = [];
 
     for (i = 0; i < numElements; i += 1) {
+        if (element.type == 'submit') continue;
         element = {
             element: elements[i],
             rules: this._extractRules(elements[i])
