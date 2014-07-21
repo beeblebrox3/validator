@@ -1,6 +1,7 @@
-node_modules
-nbproject
-.project
-.settings
-.idea
+node_modules/
+nbproject/
+.project/
+.settings/
+.idea/
+coverage/
 *.komodoproject
