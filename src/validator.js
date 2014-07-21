@@ -2,11 +2,10 @@
 
 /**
  * Validator
- * @param {object} form
+ * @param {object} form element
  * @param {object} messages
  * @param {function} onError
  * @param {function} onSuccess
- * @returns {Validator}
  */
 function Validator(form, messages, onError, onSuccess) {
     'use strict';
@@ -22,6 +21,7 @@ function Validator(form, messages, onError, onSuccess) {
         alphanumeric: 'this field must contain only letters or numbers',
         alpha: 'this field must contain only letters',
         confirmed: 'this field is not confirmed',
+        length: 'this field must be an specific length',
         min: 'this field is lower than allowed',
         max: 'this field is higher than allowed'
     };
@@ -36,8 +36,8 @@ function Validator(form, messages, onError, onSuccess) {
 }
 
 /**
- * checks all rules and call the callbacks :D
- * @returns {undefined}
+ * checks all rules and call the callbacks
+ * @returns boolean
  */
 Validator.prototype.validate = function () {
     'use strict';
@@ -50,14 +50,21 @@ Validator.prototype.validate = function () {
         element = null,
         valid = true,
         numElements = elements.length,
-        allValid = true;
+        allValid = true,
+        storeGlobalErros = false;
 
     for (i = 0; i < numElements; i += 1) {
         element = elements[i];
         element.errors = {};
         element.isValid = true;
+        storeGlobalErros = false;
 
-        // validar se estiver preenchido ou for required
+        if (element.element.name.length) {
+            this.errors[element.element.name] = {};
+            storeGlobalErros = this.errors[element.element.name];
+        }
+
+        // validates if is filled or is required
         if (element.element.value.length || element.rules.hasOwnProperty('notEmpty')) {
             for (rule in element.rules) {
                 if (element.rules.hasOwnProperty(rule)) {
@@ -75,9 +82,17 @@ Validator.prototype.validate = function () {
                             element.isValid = false;
                             allValid = false;
                         }
+
+                        if (storeGlobalErros && !valid) {
+                            storeGlobalErros[rule] = this._messages[rule];
+                        }
                     }
                 }
             }
+        }
+
+        if (JSON.stringify(storeGlobalErros) === '{}') {
+            delete this.errors[element.element.name];
         }
 
         if (!element.isValid && typeof this.onError === 'function') {
@@ -105,7 +120,7 @@ Validator.prototype._setupRules = function () {
     this._elements = [];
 
     for (i = 0; i < numElements; i += 1) {
-        if (element.type == 'submit') continue;
+        if (element.type === 'submit') continue;
         element = {
             element: elements[i],
             rules: this._extractRules(elements[i])
@@ -242,8 +257,7 @@ Validator.prototype.rule_numeric = function (element) {
 Validator.prototype.rule_email = function (element) {
     'use strict';
 
-    // @todo what to do with spaces?
-    var re = /^([a-z0-9\.]){1,}@([a-z0-9]){1,}\.([a-z0-9]){2,3}$/i;
+    var re = /^([a-z0-9\._]){1,}@(([a-z0-9\._]{1,})\.){1,}([a-z]{2,3})$/i;
     return re.test(element.value);
 };
 
@@ -256,6 +270,9 @@ Validator.prototype.rule_alphanumeric = function (element) {
     'use strict';
 
     var re = /^[a-z0-9]+$/i;
+    if (!element.value.length) {
+        return true;
+    }
     return re.test(element.value);
 };
 
@@ -268,6 +285,9 @@ Validator.prototype.rule_alpha = function (element) {
     'use strict';
 
     var re = /^[a-z]+$/i;
+    if (!element.value.length) {
+        return true;
+    }
     return re.test(element.value);
 };
 
