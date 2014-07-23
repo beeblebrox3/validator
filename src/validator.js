@@ -2,11 +2,10 @@
 
 /**
  * Validator
- * @param {object} form
+ * @param {object} form element
  * @param {object} messages
  * @param {function} onError
  * @param {function} onSuccess
- * @returns {Validator}
  */
 function Validator(form, messages, onError, onSuccess) {
     'use strict';
@@ -14,17 +13,22 @@ function Validator(form, messages, onError, onSuccess) {
     this.errors = {};
 
     var defaultMessages = {
-        notEmpty: 'this field cannot be empty',
-        numeric: 'this field must be a number',
-        email: 'this field must be an valid e-mail address',
         afterDate: 'this date is invalid',
-        beforeDate: 'this date is invalid',
-        alphanumeric: 'this field must contain only letters or numbers',
         alpha: 'this field must contain only letters',
+        alphanumeric: 'this field must contain only letters or numbers',
+        beforeDate: 'this date is invalid',
+        checked: 'this field cannot be empty',
+        cnpj: 'this is not a valid cnpj number',
         confirmed: 'this field is not confirmed',
+        cpf: 'this is not a valid cpf number',
+        digits: 'this field must be a digit',
+        digitsBetween: 'this is not a valid number',
+        email: 'this field must be an valid e-mail address',
+        length: 'this field must be an specific length',
         min: 'this field is lower than allowed',
         max: 'this field is higher than allowed',
-        checked: 'this field cannot be empty'
+        notEmpty: 'this field cannot be empty',
+        numeric: 'this field must be a number'
     };
 
     this._form = form;
@@ -37,8 +41,8 @@ function Validator(form, messages, onError, onSuccess) {
 }
 
 /**
- * checks all rules and call the callbacks :D
- * @returns {undefined}
+ * checks all rules and call the callbacks
+ * @returns boolean
  */
 Validator.prototype.validate = function () {
     'use strict';
@@ -51,14 +55,21 @@ Validator.prototype.validate = function () {
         element = null,
         valid = true,
         numElements = elements.length,
-        allValid = true;
+        allValid = true,
+        storeGlobalErros = false;
 
     for (i; i < numElements; i += 1) {
         element = elements[i];
         element.errors = {};
         element.isValid = true;
+        storeGlobalErros = false;
 
-        // validar se estiver preenchido ou for required
+        if (element.element.name.length) {
+            this.errors[element.element.name] = {};
+            storeGlobalErros = this.errors[element.element.name];
+        }
+
+        // validates if is filled or is required
         if (element.element.value.length || element.rules.hasOwnProperty('notEmpty')) {
             for (rule in element.rules) {
                 if (element.rules.hasOwnProperty(rule)) {
@@ -80,9 +91,17 @@ Validator.prototype.validate = function () {
                             element.isValid = false;
                             allValid = false;
                         }
+
+                        if (storeGlobalErros && !valid) {
+                            storeGlobalErros[rule] = this._messages[rule];
+                        }
                     }
                 }
             }
+        }
+
+        if (JSON.stringify(storeGlobalErros) === '{}') {
+            delete this.errors[element.element.name];
         }
 
         if (!element.isValid && typeof this.onError === 'function') {
@@ -105,20 +124,27 @@ Validator.prototype._setupRules = function () {
         i = 0,
         numElements = elements.length,
         element = {},
-        names = [];
+        name,
+        names = {};
 
     // reset
     this._elements = [];
 
-
     for (i; i < numElements; i += 1) {
-        if (element.type === 'submit' || elements[i].name === '' || names.indexOf(elements[i].name) >= 0) continue;
+        // Element name...
+        name = elements[i].name;
+
+        if (element.type === 'submit' || elements[i].name === '' || names.hasOwnProperty(name)) {
+            continue;
+        }
+
         element = {
             element: elements[i],
             rules: this._extractRules(elements[i])
         };
+
         this._elements.push(element);
-        names.push(elements[i].name);
+        names[name] = true;
     }
 };
 
@@ -169,15 +195,6 @@ Validator.prototype._extractRules = function (element) {
         case 'email':
             html_rules.email = true;
             break;
-        case 'date':
-            html_rules.date = true;
-            break;
-        case 'datetime':
-            html_rules.datetime = true;
-            break;
-        case 'number':
-            html_rules.numeric = true;
-            break;
     }
 
     if (element.hasAttribute('required') && element.tagName !== 'select'
@@ -189,7 +206,7 @@ Validator.prototype._extractRules = function (element) {
     if (element.hasAttribute('data-validation')) {
         custom_rules_txt = element.getAttribute('data-validation').split('|');
 
-        for (i = 0; i < custom_rules_txt.length; i += 1) {
+        for (i; i < custom_rules_txt.length; i += 1) {
             custom_rules_txt[i] = custom_rules_txt[i].split(':');
             ruleName = custom_rules_txt[i][0];
             ruleValues = (custom_rules_txt[i][1] !== undefined) ? custom_rules_txt[i][1].split(',') : true;
@@ -249,6 +266,7 @@ Validator.prototype.rule_length = function (element, length) {
  */
 Validator.prototype.rule_notEmpty = function (element) {
     'use strict';
+    
     // Make trim in value.
     element.value = this._trim(element.value);
 
@@ -256,24 +274,98 @@ Validator.prototype.rule_notEmpty = function (element) {
 };
 
 /**
- * checks if the value is numeric
+ * checks if the value is a digit
  * @param {object} element
  * @returns {Boolean}
  */
-Validator.prototype.rule_numeric = function (element) {
+Validator.prototype.rule_digits = function (element) {
     'use strict';
+
     var re = /^([0-9]){1,}$/;
     return re.test(element.value);
 };
 
 /**
- * checks if the value is an valid email
+ * check if the value have the number specify of digits
+ * @param element
+ * @param range
+ * @returns {boolean}
+ */
+Validator.prototype.rule_digitsBetween = function(element, range) {
+    'use strict';
+
+    var digits = element.value,
+        clean = /[^\d]+/g,
+        regexp = /^([0-9]){1,}$/,
+        min = 1,
+        max = min,
+        length;
+
+    // Clean the element
+    digits = digits.replace(clean, '');
+
+    // Check if array
+    if (range instanceof Array) {
+        min = (range[0]) ? parseInt(range[0]) : 1;
+        max = (range[1]) ? parseInt(range[1]) : min;
+    }
+
+    // Display min error
+    if (isNaN(min)) {
+        throw "ERROR (rule_min) | min MUST be a number";
+    }
+
+    // Display max error
+    if (isNaN(max)) {
+        throw "ERROR (rule_max) | max MUST be a number";
+    }
+
+    // Define digits length...
+    length = digits.length;
+
+    // Compare...
+    if (length < min || length > max) {
+        return false;
+    }
+
+    // Return true if number of digits is ok!
+    return regexp.test(digits);
+};
+
+/**
+ * checks if the value is numeric
+ * Default is dot validation
+ * Use: numeric:c for comma validation
+ * @param {object} element
+ * @param {string} type
+ * @returns {Boolean}
+ */
+Validator.prototype.rule_numeric = function (element, type) {
+    'use strict';
+
+    var comma = /(^([0-9\.]){1,})(\,){0,1}([0-9]*){1}$/i,
+        dot = /(^([0-9\,]){1,})(\.){0,1}([0-9]*){1}$/i;
+
+    if (type instanceof Array) {
+        type = type[0];
+    }
+
+    if (type === 'c') {
+        return comma.test(element.value);
+    }
+
+    return dot.test(element.value);
+};
+
+/**
+ * checks if the value is a valid email
  * @param {object} element
  * @returns {Boolean}
  */
 Validator.prototype.rule_email = function (element) {
     'use strict';
-    var re = /^([a-z0-9\._]){1,}@(([a-z0-9]){1,}\.){1,}([a-z]){2,3}$/i;
+
+    var re = /^([a-z0-9\._]){1,}@(([a-z0-9\._]{1,})\.){1,}([a-z]{2,3})$/i;
     return re.test(element.value);
 };
 
@@ -284,7 +376,11 @@ Validator.prototype.rule_email = function (element) {
  */
 Validator.prototype.rule_alphanumeric = function (element) {
     'use strict';
+
     var re = /^[a-z0-9]+$/i;
+    if (!element.value.length) {
+        return true;
+    }
     return re.test(element.value);
 };
 
@@ -295,8 +391,164 @@ Validator.prototype.rule_alphanumeric = function (element) {
  */
 Validator.prototype.rule_alpha = function (element) {
     'use strict';
+
     var re = /^[a-z]+$/i;
+    if (!element.value.length) {
+        return true;
+    }
     return re.test(element.value);
+};
+
+/**
+ * check if cpf is a valid number...
+ * @param element
+ * @returns {boolean}
+ */
+Validator.prototype.rule_cpf = function (element) {
+    'use strict';
+
+    var cpf = element.value,
+        regexp = /[^\d]+/g,
+        sum = 0,
+        over,
+        i = 0,
+        j = 0;
+
+    // Make trim in value.
+    cpf = this._trim(cpf);
+
+    // Remove cpf Mask!
+    cpf = cpf.replace(regexp, '');
+
+    // First validate invalid numbers...
+    if (cpf.length != 11 ||
+        cpf === "00000000000" ||
+        cpf === "11111111111" ||
+        cpf === "22222222222" ||
+        cpf === "33333333333" ||
+        cpf === "44444444444" ||
+        cpf === "55555555555" ||
+        cpf === "66666666666" ||
+        cpf === "77777777777" ||
+        cpf === "88888888888" ||
+        cpf === "99999999999"){
+        return false;
+    }
+
+    // Checking first nine digits
+    for (i; i < 9; i += 1) {
+        sum += parseInt(cpf.charAt(i)) * (10 - i);
+    }
+
+    over = 11 - (sum % 11);
+
+    if (over === 10 || over === 11) {
+        over = 0;
+    }
+
+    if (over != parseInt(cpf.charAt(9))) {
+        return false;
+    }
+
+    // Reset Sum...
+    sum = 0;
+
+    // Checking again...
+    for (j; j < 10; j += 1) {
+        sum += parseInt(cpf.charAt(j)) * (11 - j);
+    }
+
+    over = 11 - (sum % 11);
+
+    if (over === 10 || over === 11) {
+        over = 0;
+    }
+
+    // Checking the last digit..
+    if (over !== parseInt(cpf.charAt(10))) {
+        return false;
+    }
+    // Return true if number is ok!
+    return true;
+
+};
+
+/**
+ * check if cnpj number is valid
+ * @param element
+ * @returns {boolean}
+ */
+Validator.prototype.rule_cnpj = function (element) {
+    'use strict';
+
+    var cnpj = element.value,
+        regexp = /[^\d]+/g,
+        size = 12,
+        position = (size - 7),
+        sum = 0,
+        numbers,
+        digits,
+        result,
+        i;
+
+    // Make trim in value.
+    cnpj = this._trim(cnpj);
+
+    // Remove CNPJ mask.
+    cnpj = cnpj.replace(regexp, '');
+
+    // Return false to knows errors
+    if (cnpj.length != 14 ||
+        cnpj == "00000000000000" ||
+        cnpj == "11111111111111" ||
+        cnpj == "22222222222222" ||
+        cnpj == "33333333333333" ||
+        cnpj == "44444444444444" ||
+        cnpj == "55555555555555" ||
+        cnpj == "66666666666666" ||
+        cnpj == "77777777777777" ||
+        cnpj == "88888888888888" ||
+        cnpj == "99999999999999") {
+        return false;
+    }
+
+    // Validate Digits
+    numbers = cnpj.substring(0, size);
+    digits = cnpj.substring(size);
+
+    for (i = size; i >= 1; i -= 1) {
+        sum += numbers.charAt(size - i) * position--;
+        if (position < 2) {
+            position = 9;
+        }
+    }
+
+    result = sum % 11 < 2 ? 0 : 11 - sum % 11;
+
+    if (result != digits.charAt(0)) {
+        return false;
+    }
+
+    // Redefine variables...
+    size = size + 1;
+    position = size - 7;
+    numbers = cnpj.substring(0,size);
+    sum = 0;
+
+    for (i = size; i >= 1; i -= 1) {
+        sum += numbers.charAt(size - i) * position--;
+        if (position < 2) {
+            position = 9;
+        }
+    }
+
+    result = sum % 11 < 2 ? 0 : 11 - sum % 11;
+    // Last verification...
+    if (result != digits.charAt(1)) {
+        return false;
+    }
+    // Return true if number is ok!
+    return true;
 };
 
 /**
@@ -308,6 +560,7 @@ Validator.prototype.rule_alpha = function (element) {
  */
 Validator.prototype.rule_min = function (element, min, rules) {
     'use strict';
+
     if (min instanceof Array) {
         min = min[0];
     }
@@ -316,21 +569,28 @@ Validator.prototype.rule_min = function (element, min, rules) {
         throw "ERROR (rule_min) | min MUST be a number";
     }
 
+    // String...
+    element.value = this._trim(element.value);
+
     // Numeric...
     if (rules.hasOwnProperty('numeric')) {
 
+        // Check if is a number...
         if (!this.rule_numeric(element)) {
             return false;
         }
 
-        return parseInt(element.value, 10) >= min;
+        // Check the comma validation...
+        if (rules.numeric[0] === 'c') {
+            return parseFloat(element.value.replace(/,/, '.')) >= parseInt(min, 10);
+        }
+
+        return parseFloat(element.value) >= parseInt(min, 10);
 
     }
 
-    // String...
-    element.value = this._trim(element.value);
 
-    return parseInt(element.value.length, 10) >= min;
+    return parseInt(element.value.length, 10) >= parseInt(min, 10);
 
 };
 
@@ -352,6 +612,9 @@ Validator.prototype.rule_max = function (element, max, rules) {
         throw "ERROR (rule_max) | max MUST be a number";
     }
 
+    // String...
+    element.value = this._trim(element.value);
+
     // Numeric...
     if (rules.hasOwnProperty('numeric')) {
 
@@ -359,14 +622,17 @@ Validator.prototype.rule_max = function (element, max, rules) {
             return false;
         }
 
-        return parseInt(element.value, 10) <= max;
+        // Check the comma validation...
+        if (rules.numeric[0] === 'c') {
+            return parseFloat(element.value.replace(/,/, '.')) <= parseInt(max);
+        }
+
+        return parseFloat(element.value) <= parseInt(max);
 
     }
 
-    // String...
-    element.value = this._trim(element.value);
 
-    return parseInt(element.value.length, 10) <= max;
+    return parseInt(element.value.length, 10) <= parseInt(max);
 };
 
 
@@ -377,8 +643,8 @@ Validator.prototype.rule_max = function (element, max, rules) {
  * @param range
  */
 Validator.prototype.rule_checked = function (element, range) {
-    "use strict";
-
+    'use strict';
+    // @todo verificar no IE8 esta função da forma como está abaixo...
     var total = this._form.querySelectorAll('input[name="' + element.name + '"]:checked').length,
         min = 1,
         max = 0;
@@ -416,4 +682,4 @@ Validator.prototype.rule_checked = function (element, range) {
 
     // If everything is fine!
     return true;
-}
+};
