@@ -5,9 +5,22 @@
         <meta charset="utf-8" />
 
         <style>
+<<<<<<< HEAD
             body{
                 margin: 0 auto;
                 width: 500px;
+=======
+            *, *:before, *:after {
+                box-sizing: border-box;
+            }
+            body{
+                margin: 0 auto;
+                width: 600px;
+                font-family: 'Calibri', 'Arial', 'Helvetica', sans-serif;
+            }
+            fieldset{
+                margin-bottom: 10px;
+>>>>>>> bcbd9cc... improvements on lengh, numeric, min, max and notEmpty rules; add checked, digits, digitsBetween, cpf and cnpj rules; pull request #3
             }
             .error {
                 border-left: 3px solid red;
@@ -22,7 +35,6 @@
             form input, form select, form textarea {
                 display: block;
                 width: 100%;
-                max-width: 500px;
                 border: 1px solid #ccc;
                 padding: 7px;
                 margin-bottom: 20px;
@@ -61,7 +73,7 @@
             Background green indicates the inputs that must be valid<br />
             Borderm-bottom indicates required="required" inputs
         </p>
-
+        
         <form novalidate="novalidate">
             <fieldset>
                 <legend>Required:</legend>
@@ -263,8 +275,8 @@
 
         <script type="text/javascript" src="src/validator.js"></script>
         <script type="text/javascript">
-            var form = document.forms[0];
-            var validator = new Validator(form, {}, function () {
+            var form = document.forms[0],
+                validator = new Validator(form, {}, function () {
                 this.classList.add('error');
                 this.classList.remove('success');
             }, function () {

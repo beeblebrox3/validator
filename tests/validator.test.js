@@ -31,7 +31,7 @@ QUnit.test('test complex form', function (assert) {
     ).appendChild(
         $.mk('input', 'aa', {required: true, name: 'input_e', type: 'number'}) // invalid
     ).appendChild(
-        $.mk('input', '33', {required: true, name: 'input_f', type: 'number'}) // valid
+        $.mk('input', '33', {required: true, name: 'input_f', type: 'number', 'data-validation': 'digits'}) // valid
     ).appendChild(
         $.mk('input', 'aa aa', {required: true, name: 'input_g', 'data-validation': 'alphanumeric'}) // invalid
     ).appendChild(
@@ -41,17 +41,17 @@ QUnit.test('test complex form', function (assert) {
     ).appendChild(
         $.mk('input', 'abc', {required: true, name: 'input_j', 'data-validation': 'alpha'}) // valid
     ).appendChild(
-        $.mk('input', '0', {required: true, name: 'input_k', 'data-validation': 'min:10|numeric'}) // invalid
+        $.mk('input', '0', {required: true, name: 'input_k', 'data-validation': 'numeric|min:10'}) // invalid
     ).appendChild(
-        $.mk('input', '10', {required: true, name: 'input_l', 'data-validation': 'min:10|numeric'}) // valid
+        $.mk('input', '10', {required: true, name: 'input_l', 'data-validation': 'numeric|min:10'}) // valid
     ).appendChild(
-        $.mk('input', '100', {required: true, name: 'input_m', 'data-validation': 'min:10|numeric'}) // valid
+        $.mk('input', '100', {required: true, name: 'input_m', 'data-validation': 'numeric|min:10'}) // valid
     ).appendChild(
-        $.mk('input', '0', {required: true, name: 'input_n', 'data-validation': 'max:10|numeric'}) // valid
+        $.mk('input', '0', {required: true, name: 'input_n', 'data-validation': 'numeric|max:10'}) // valid
     ).appendChild(
-        $.mk('input', '10', {required: true, name: 'input_o', 'data-validation': 'max:10|numeric'}) // valid
+        $.mk('input', '10', {required: true, name: 'input_o', 'data-validation': 'numeric|max:10'}) // valid
     ).appendChild(
-        $.mk('input', '100', {required: true, name: 'input_p', 'data-validation': 'max:10|numeric'}) // invalid
+        $.mk('input', '100', {required: true, name: 'input_p', 'data-validation': 'numeric|max:10'}) // invalid
     ).appendChild(
         $.mk('input', 'aaa@domain.com', {required: true, name: 'input_q', 'data-validation': 'email'}) // valid
     ).appendChild(
@@ -130,4 +130,27 @@ QUnit.test('test complex form', function (assert) {
     assert.equal(false, validator.errors.hasOwnProperty('input_o'));
     assert.equal(true, validator.errors.hasOwnProperty('input_p'));
     assert.equal(false, validator.errors.hasOwnProperty('input_q'));
+    assert.equal(true, validator.errors.hasOwnProperty('input_r'));
+    assert.equal(false, validator.errors.hasOwnProperty('input_s'));
+    assert.equal(false, validator.errors.hasOwnProperty('input_t'));
+    assert.equal(false, validator.errors.hasOwnProperty('input_u'));
+    assert.equal(false, validator.errors.hasOwnProperty('input_v'));
+    assert.equal(false, validator.errors.hasOwnProperty('input_w'));
+    assert.equal(false, validator.errors.hasOwnProperty('input_x'));
+    assert.equal(true, validator.errors.hasOwnProperty('input_y'));
+    assert.equal(false, validator.errors.hasOwnProperty('input_z'));
+    assert.equal(true, validator.errors.hasOwnProperty('input_aa'));
+    assert.equal(false, validator.errors.hasOwnProperty('input_ab'));
+    assert.equal(true, validator.errors.hasOwnProperty('input_ac'));
+    assert.equal(false, validator.errors.hasOwnProperty('input_ad'));
+    assert.equal(false, validator.errors.hasOwnProperty('input_ae'));
+    assert.equal(true, validator.errors.hasOwnProperty('input_af'));
+    assert.equal(false, validator.errors.hasOwnProperty('input_ag'));
+    assert.equal(false, validator.errors.hasOwnProperty('input_ah'));
+    assert.equal(false, validator.errors.hasOwnProperty('input_ai'));
+    assert.equal(true, validator.errors.hasOwnProperty('input_aj'));
+    assert.equal(false, validator.errors.hasOwnProperty('input_ak'));
+    assert.equal(false, validator.errors.hasOwnProperty('input_al'));
+    assert.equal(true, validator.errors.hasOwnProperty('input_am'));
+    assert.equal(true, validator.errors.hasOwnProperty('input_an'));
 });

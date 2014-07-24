@@ -163,30 +163,42 @@ QUnit.test('test rule min', function (assert) {
     rule = validator.rule_min;
 
     input.value = '';
-    assert.equal(false, rule.call(validator, input, 10, {'numeric' : true}));
+
+    assert.equal(false, rule.call(validator, input, 10, {'numeric': true}));
 
     input.value = 5;
-    assert.equal(false, rule.call(validator, input, 10, {'numeric' : true}));
+    assert.equal(false, rule.call(validator, input, 10, {'numeric': true}));
 
     input.value = 10;
-    assert.equal(true, rule.call(validator, input, 10, {'numeric' : true}));
+    assert.equal(true, rule.call(validator, input, 10, {'numeric': true}));
 
     input.value = 100;
-    assert.equal(true, rule.call(validator, input, 10, {'numeric' : true}));
+    assert.equal(true, rule.call(validator, input, 10, {'numeric': true}));
 });
 
 QUnit.test('test rule max', function (assert) {
     rule = validator.rule_max;
 
     input.value = '';
-    assert.equal(false, rule.call(validator, input, 10, {'numeric' : true}));
+
+    assert.equal(false, rule.call(validator, input, 10, {'numeric': true}));
 
     input.value = 5;
-    assert.equal(true, rule.call(validator, input, 10, {'numeric' : true}));
+    assert.equal(true, rule.call(validator, input, 10, {'numeric': true}));
 
     input.value = 10;
-    assert.equal(true, rule.call(validator, input, 10, {'numeric' : true}));
+    assert.equal(true, rule.call(validator, input, 10, {'numeric': true}));
 
     input.value = 100;
-    assert.equal(false, rule.call(validator, input, 10, {'numeric' : true}));
+    assert.equal(false, rule.call(validator, input, 10, {'numeric': true}));
+});
+
+QUnit.test('test rule checked', function (assert) {
+    rule = validator.rule_checked;
+
+    input.value = '';
+    assert.equal(false, rule.call(validator, input, [1,10]));
+
+    input.value = 5;
+    assert.equal(false, rule.call(validator, input, [1,10]));
 });
