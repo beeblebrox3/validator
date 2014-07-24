@@ -197,8 +197,8 @@ Validator.prototype._extractRules = function (element) {
             break;
     }
 
-    if (element.hasAttribute('required') && element.tagName !== 'select'
-        && element.type !== 'checkbox' &&  element.type !== 'radio') {
+    if (element.hasAttribute('required') && element.tagName !== 'select' &&
+        element.type !== 'checkbox' &&  element.type !== 'radio') {
         html_rules.notEmpty = true;
     }
 
@@ -233,7 +233,7 @@ Validator.prototype._trim = function (str) {
 
     return str.replace(/^\s+|\s+$/g, '');
 
-}
+};
 
 /**
  * checks if value of element is equals args
@@ -286,9 +286,10 @@ Validator.prototype.rule_digits = function (element) {
 };
 
 /**
- * check if the value have the number specify of digits
+ * check if the value have the number specify of digits.
+ * Important: Define Min and Max, ever!
  * @param element
- * @param range
+ * @param {array} range
  * @returns {boolean}
  */
 Validator.prototype.rule_digitsBetween = function(element, range) {
@@ -306,30 +307,39 @@ Validator.prototype.rule_digitsBetween = function(element, range) {
 
     // Check if array
     if (range instanceof Array) {
-        min = (range[0]) ? parseInt(range[0]) : 1;
-        max = (range[1]) ? parseInt(range[1]) : min;
+        min = range[0];
+        max = range[1];
+
+        // Display min error
+        if (isNaN(min) || min.length === 0) {
+            throw "ERROR (rule_min) | min MUST be a valid number";
+        }
+
+        // Display max error
+        if (isNaN(max) || max.length === 0) {
+            throw "ERROR (rule_max) | max MUST be a valid number";
+        }
+
+        // Define digits length...
+        length = digits.length;
+
+        // Check min and max
+        if (min > max) {
+            throw "ERROR (rule_max) | max MUST be equal or higher than min.";
+        }
+
+        // Compare...
+        if (length < min || length > max) {
+            return false;
+        }
+
+        // Return true if number of digits is ok!
+        return regexp.test(digits);
+
     }
 
-    // Display min error
-    if (isNaN(min)) {
-        throw "ERROR (rule_min) | min MUST be a number";
-    }
+    throw "ERROR (range) | DEFINE the range.";
 
-    // Display max error
-    if (isNaN(max)) {
-        throw "ERROR (rule_max) | max MUST be a number";
-    }
-
-    // Define digits length...
-    length = digits.length;
-
-    // Compare...
-    if (length < min || length > max) {
-        return false;
-    }
-
-    // Return true if number of digits is ok!
-    return regexp.test(digits);
 };
 
 /**
@@ -640,11 +650,11 @@ Validator.prototype.rule_max = function (element, max, rules) {
  * Check if elements are be checked and compare total with min
  * and max value of checkeds. Use for checkbox and radio fields.
  * @param element
- * @param range
+ * @param {array} range
  */
 Validator.prototype.rule_checked = function (element, range) {
     'use strict';
-    // @todo verificar no IE8 esta função da forma como está abaixo...
+
     var total = this._form.querySelectorAll('input[name="' + element.name + '"]:checked').length,
         min = 1,
         max = 0;

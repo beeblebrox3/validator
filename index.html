@@ -140,11 +140,15 @@
             </fieldset>
 
             <fieldset>
-                <legend>Number between 10 and 121 with float</legend>
+                <legend>Number between 10 and 121 with float (DOT)</legend>
                 <input type="text" name="test1801" data-validation="numeric|min:10|max:20" value="9.50" />
                 <input type="text" name="test1802" data-validation="numeric|min:10|max:20" value="15.222" class="right" />
                 <input type="text" name="test1803" data-validation="numeric|min:10|max:20" value="20.569" />
                 <input type="text" name="test1804" data-validation="numeric|min:10|max:20" value="21.569" />
+            </fieldset>
+
+            <fieldset>
+                <legend>Number between 10 and 121 with float (COMMA)</legend>
                 <input type="text" name="test1805" data-validation="numeric:c|min:10|max:20" value="9,50" />
                 <input type="text" name="test1806" data-validation="numeric:c|min:10|max:20" value="15,222" class="right" />
                 <input type="text" name="test1807" data-validation="numeric:c|min:10|max:20" value="20,569" />
@@ -237,10 +241,10 @@
 
             <fieldset>
                 <legend>CEP</legend>
-                <input type="text" name="test1501" required="required" data-validation="digitsBetween:8" value="65.903-040" class="right" />
-                <input type="text" name="test1502" required="required" data-validation="digitsBetween:8" value="65903040" />
-                <input type="text" name="test1503" required="required" data-validation="digitsBetween:8" value="6590304" />
-                <input type="text" name="test1504" required="required" data-validation="digitsBetween:8" value="659030400" />
+                <input type="text" name="test1501" required="required" data-validation="digitsBetween:8,8" value="65.903-040" class="right" />
+                <input type="text" name="test1502" required="required" data-validation="digitsBetween:8,8" value="65903040" class="right" />
+                <input type="text" name="test1503" required="required" data-validation="digitsBetween:8,8" value="6590304" />
+                <input type="text" name="test1504" required="required" data-validation="digitsBetween:8,8" value="659030400" />
             </fieldset>
 
             <fieldset>

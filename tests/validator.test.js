@@ -83,11 +83,11 @@ QUnit.test('test complex form', function (assert) {
     ).appendChild(
         $.mk('input', '66.855.350/0001-94', {name: 'input_ac', 'type': 'text', 'data-validation': 'cnpj'}) // invalid
     ).appendChild(
-        $.mk('input', '65903040', {name: 'input_ad', 'type': 'text', 'data-validation': 'digitsBetween:8'}) // valid
+        $.mk('input', '65903040', {name: 'input_ad', 'type': 'text', 'data-validation': 'digitsBetween:8,8'}) // valid
     ).appendChild(
-        $.mk('input', '65.903-040', {name: 'input_ae', 'type': 'text', 'data-validation': 'digitsBetween:8'}) // valid
+        $.mk('input', '65.903-040', {name: 'input_ae', 'type': 'text', 'data-validation': 'digitsBetween:8,8'}) // valid
     ).appendChild(
-        $.mk('input', '65.903-04', {name: 'input_af', 'type': 'text', 'data-validation': 'digitsBetween:8'}) // invalid
+        $.mk('input', '65.903-04', {name: 'input_af', 'type': 'text', 'data-validation': 'digitsBetween:8,8'}) // invalid
     ).appendChild(
         $.mk('input', '(16) 99977-8145', {name: 'input_ag', 'type': 'text', 'data-validation': 'digitsBetween:10,11'}) // valid
     ).appendChild(
