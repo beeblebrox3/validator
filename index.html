@@ -5,6 +5,17 @@
         <meta charset="utf-8" />
 
         <style>
+            *, *:before, *:after {
+                box-sizing: border-box;
+            }
+            body{
+                margin: 0 auto;
+                width: 600px;
+                font-family: 'Calibri', 'Arial', 'Helvetica', sans-serif;
+            }
+            fieldset{
+                margin-bottom: 10px;
+            }
             .error {
                 border-left: 3px solid red;
             }
@@ -15,15 +26,25 @@
                 display: block;
                 font-weight: bold;
             }
-            form input {
+            form input, form select, form textarea {
                 display: block;
                 width: 100%;
-                max-width: 500px;
                 border: 1px solid #ccc;
                 padding: 7px;
                 margin-bottom: 20px;
                 outline: none;
             }
+            input[type="radio"],
+            input[type="checkbox"] {
+                width: auto;
+                margin: 2px 3px 0 0;
+                display: inline-block;
+            }
+            input[type="radio"].error ~ span ,
+            input[type="checkbox"].error ~ span {
+                color: red;
+            }
+
             hr {
                 width: 100%;
                 max-width: 500px;
@@ -31,10 +52,10 @@
             }
             
             .right {
-                background: #bdfec0;
+                background: #E7FFE8;
             }
             [required] {
-                border-bottom: 1px solid gold;
+                border-bottom: 2px solid #FFAD00;
             }
         </style>
     </head>
@@ -44,93 +65,203 @@
         <h3>TESTING</h3>
         <p>Left border indicates result of the validation proccess.<br />
             Background green indicates the inputs that must be valid<br />
-            Borderm-bottom indicates required inputs
+            Borderm-bottom indicates required="required" inputs
         </p>
         
-        <form novalidate>
-            <label>Required</label>
-            <input type="text" required value="hello world" class="right"/>
-            <input type="text" required value="" name="first" />
-            
-            <hr />
+        <form novalidate="novalidate">
+            <fieldset>
+                <legend>Required:</legend>
+                <input type="text" name="test001" required="required" value="hello world" class="right"/>
+                <input type="text" name="test002" required="required" value="" />
+            </fieldset>
 
-            <label>Must have 3 caracteres</label>
-            <input type="text" data-validation="length:3" required value="" />
-            <input type="text" data-validation="length:3" required value="1" />
-            <input type="text" data-validation="length:3" required value="333" class="right" />
-            <input type="text" data-validation="length:3" required value="4444" />
-            <input type="text" data-validation="length:3" class="right" placeholder="is not required"/>
+            <fieldset>
+                <legend>Must have 3 caracteres</legend>
+                <input type="text" name="test101" data-validation="length:3" required="required" value="" />
+                <input type="text" name="test102" data-validation="length:3" required="required" value="1" />
+                <input type="text" name="test103" data-validation="length:3" required="required" value="333" class="right" />
+                <input type="text" name="test104" data-validation="length:3" required="required" value="4444" />
+                <input type="text" name="test105" data-validation="length:3" class="right" placeholder="is not required"/>
+            </fieldset>
 
-            <hr />
-            
-            <label>Must be numeric</label>
-            <input type="number" required />
-            <input type="number" required value="aa" />
-            <input type="number" required value="127" class="right" />
-            <input type="number" class="right" />
+            <fieldset>
+                <legend>Must be a digit</legend>
+                <input type="number" data-validation="digits" name="test201" required="required" />
+                <input type="number" data-validation="digits" name="test202" required="required" value="aa" />
+                <input type="number" data-validation="digits" name="test203" required="required" value="127" class="right" />
+                <input type="number" data-validation="digits" name="test204" class="right" />
+            </fieldset>
 
-            <hr />
-            
-            <label>Must be alphanumeric</label>
-            <input type="text" data-validation="alphanumeric" required value=" das asd" />
-            <input type="text" data-validation="alphanumeric" required value="sadasdas" class="right" />
-            <input type="text" data-validation="alphanumeric" required value="sadasd232as" class="right" />
-            <input type="text" data-validation="alphanumeric" required value="3222" class="right" />
-            <input type="text" data-validation="alphanumeric" required value=" das asd!" />
-            <input type="text" data-validation="alphanumeric" required value="@" />
+            <fieldset>
+                <legend>Must be alphanumeric</legend>
+                <input type="text" name="test301" data-validation="alphanumeric" required="required" value=" das asd" />
+                <input type="text" name="test302" data-validation="alphanumeric" required="required" value="sadasdas" class="right" />
+                <input type="text" name="test303" data-validation="alphanumeric" required="required" value="sadasd232as" class="right" />
+                <input type="text" name="test304" data-validation="alphanumeric" required="required" value="3222" class="right" />
+                <input type="text" name="test305" data-validation="alphanumeric" required="required" value=" das asd!" />
+                <input type="text" name="test306" data-validation="alphanumeric" required="required" value="@" />
+            </fieldset>
 
-            <hr />
-            
-            <label>Must be only letters</label>
-            <input type="text" data-validation="alpha" required value=" das asd" />
-            <input type="text" data-validation="alpha" required value="sadasdas" class="right" />
-            <input type="text" data-validation="alpha" required value="sadasd232as" />
-            <input type="text" data-validation="alpha" required value="3222" />
-            <input type="text" data-validation="alpha" required value=" das asd!" />
-            <input type="text" data-validation="alpha" required value="@" />
+            <fieldset>
+                <legend>Must be only letters</legend>
+                <input type="text" name="test401" data-validation="alpha" required="required" value=" das asd" />
+                <input type="text" name="test402" data-validation="alpha" required="required" value="sadasdas" class="right" />
+                <input type="text" name="test403" data-validation="alpha" required="required" value="sadasd232as" />
+                <input type="text" name="test404" data-validation="alpha" required="required" value="3222" />
+                <input type="text" name="test405" data-validation="alpha" required="required" value=" das asd!" />
+                <input type="text" name="test406" data-validation="alpha" required="required" value="@" />
+            </fieldset>
 
-            <hr />
-            
-            <label>Number >= 7</label>
-            <input type="text" data-validation="min:7" value="" required />
-            <input type="text" data-validation="min:7" value="1" required />
-            <input type="text" data-validation="min:7" value="7" required class="right" />
-            <input type="text" data-validation="min:7" value="17" required class="right" />
-            
+            <fieldset>
+                <legend>Number >= 7</legend>
+                <input type="number" name="test501" data-validation="numeric|min:7" value="" required="required" />
+                <input type="number" name="test502" data-validation="numeric|min:7" value="1" required="required" />
+                <input type="number" name="test503" data-validation="numeric|min:7" value="7" required="required" class="right" />
+                <input type="number" name="test504" data-validation="numeric|min:7" value="17" required="required" class="right" />
+            </fieldset>
 
-            <hr />
-            
-            <label>Number <= 7</label>
-            <input type="text" data-validation="max:7" value="" required />
-            <input type="text" data-validation="max:7" value="1" required  class="right"/>
-            <input type="text" data-validation="max:7" value="7" required class="right" />
-            <input type="text" data-validation="max:7" value="17" required />
 
-            <hr />
-            
-            <label>Number between 10 and 121</label>
-            <input type="text" data-validation="numeric|max:121|min:10" value="" required />
-            <input type="text" data-validation="numeric|max:121|min:10" value="9" required />
-            <input type="text" data-validation="numeric|max:121|min:10" value="10" class="right" required />
-            <input type="text" data-validation="numeric|max:121|min:10" value="101" class="right" required />
-            <input type="text" data-validation="numeric|max:121|min:10" value="121" class="right" required />
-            <input type="text" data-validation="numeric|max:121|min:10" value="151" required />
+            <fieldset>
+                <legend>Number <= 7</legend>
+                <input type="number" name="test601" data-validation="numeric|max:7" value="" required="required" />
+                <input type="number" name="test602" data-validation="numeric|max:7" value="1" required="required" class="right"/>
+                <input type="number" name="test603" data-validation="numeric|max:7" value="7" required="required" class="right" />
+                <input type="number" name="test604" data-validation="numeric|max:7" value="17" required="required" />
+            </fieldset>
 
-            <hr />
-            
-            <label>E-mail</label>
-            <input type="email" required value="sadasdasdas" />
-            <input type="email" required value="" />
-            <input type="email" required value="asdasdasd@google" />
-            <input type="email" required value="sadasdas@google.com" class="right" />
-            <input type="email" required value="sadasdas@google.c" />
-            <input type="email" required value="sadasda@s@google.com" />
-            <input type="email" required value="sada$sdas@google.com" />
-            <input type="email" required value="sada sdas@google.com" />
-            <input type="email" required value=" sadasdas@google.com" />
-            <input type="email" required value="sadasdas@google.com " />
-            <input type="email" required value="sad.asdas@google.com" class="right" />
-            
+            <fieldset>
+                <legend>Number between 10 and 121</legend>
+                <input type="text" name="test701" data-validation="numeric|max:121|min:10" value="" required="required" />
+                <input type="text" name="test702" data-validation="numeric|max:121|min:10" value="9" required="required" />
+                <input type="text" name="test703" data-validation="numeric|max:121|min:10" value="10" class="right" required="required" />
+                <input type="text" name="test704" data-validation="numeric|max:121|min:10" value="101" class="right" required="required" />
+                <input type="text" name="test705" data-validation="numeric|max:121|min:10" value="121" class="right" required="required" />
+                <input type="text" name="test706" data-validation="numeric|max:121|min:10" value="151" required="required" />
+            </fieldset>
+
+            <fieldset>
+                <legend>Number between 10 and 121 with float (DOT)</legend>
+                <input type="text" name="test1801" data-validation="numeric|min:10|max:20" value="9.50" />
+                <input type="text" name="test1802" data-validation="numeric|min:10|max:20" value="15.222" class="right" />
+                <input type="text" name="test1803" data-validation="numeric|min:10|max:20" value="20.569" />
+                <input type="text" name="test1804" data-validation="numeric|min:10|max:20" value="21.569" />
+            </fieldset>
+
+            <fieldset>
+                <legend>Number between 10 and 121 with float (COMMA)</legend>
+                <input type="text" name="test1805" data-validation="numeric:c|min:10|max:20" value="9,50" />
+                <input type="text" name="test1806" data-validation="numeric:c|min:10|max:20" value="15,222" class="right" />
+                <input type="text" name="test1807" data-validation="numeric:c|min:10|max:20" value="20,569" />
+                <input type="text" name="test1808" data-validation="numeric:c|min:10|max:20" value="21,569" />
+            </fieldset>
+
+            <fieldset>
+                <legend>E-mail</legend>
+                <input type="email" name="test801" required="required" value="sadasdasdas" />
+                <input type="email" name="test802" required="required" value="" />
+                <input type="email" name="test803" required="required" value="asdasdasd@google" />
+                <input type="email" name="test804" required="required" value="sadasdas@google.com" class="right" />
+                <input type="email" name="test805" required="required" value="sadasdas@google.c" />
+                <input type="email" name="test806" required="required" value="sadasda@s@google.com" />
+                <input type="email" name="test807" required="required" value="sada$sdas@google.com" />
+                <input type="email" name="test808" required="required" value="sada sdas@google.com" />
+                <input type="email" name="test809" required="required" value="sadas_das@google.com.br" />
+                <input type="email" name="test810" required="required" value="sadasdas@google.com " />
+                <input type="email" name="test811" required="required" value="sad.asdas@google.com" class="right" />
+            </fieldset>
+
+            <fieldset>
+                <legend>Radio Required</legend>
+                <input type="radio" name="test901" data-validation="checked" value="001" /><span>Value 001</span><br />
+                <input type="radio" name="test901" data-validation="checked" value="002" /><span>Value 002</span><br />
+                <input type="radio" name="test901" data-validation="checked" value="003" /><span>Value 003</span><br />
+                <input type="radio" name="test901" data-validation="checked" /><span>Value 004</span><br />
+                <input type="radio" name="test901" data-validation="checked" /><span>Value 005</span><br />
+            </fieldset>
+
+            <fieldset>
+                <legend>Checkbox Required</legend>
+                <input type="checkbox" name="test1001" data-validation="checked" value="001" checked="checked" /><span>Value 001</span><br />
+            </fieldset>
+
+            <fieldset>
+                <legend>Checkbox Min-checked = 2</legend>
+                <input type="checkbox" name="test1002" data-validation="checked:2" required="required" value="002" /><span>Value 001</span><br />
+                <input type="checkbox" name="test1002" data-validation="checked:2" required="required" checked="checked" value="003" /><span>Value 002</span><br />
+                <input type="checkbox" name="test1002" data-validation="checked:2" required="required" value="004" /><span>Value 003</span><br />
+                <input type="checkbox" name="test1002" data-validation="checked:2" required="required" value="005" /><span>Value 004</span><br />
+            </fieldset>
+
+            <fieldset>
+                <legend>Checkbox Min-checked = 1 and Max-checked = 3</legend>
+                <input type="checkbox" name="test1003" data-validation="checked:1,3" required="required" value="003" /><span>Value 001</span><br />
+                <input type="checkbox" name="test1003" data-validation="checked:1,3" required="required" value="004" /><span>Value 002</span><br />
+                <input type="checkbox" name="test1003" data-validation="checked:1,3" required="required" checked="checked" value="005" /><span>Value 003</span><br />
+                <input type="checkbox" name="test1003" data-validation="checked:1,3" required="required" checked="checked" value="006" /><span>Value 004</span><br />
+                <input type="checkbox" name="test1003" data-validation="checked:1,3" required="required" checked="checked" value="007" /><span>Value 004</span><br />
+            </fieldset>
+
+
+            <fieldset>
+                <legend>Select Required</legend>
+                <select name="test1101" required="required">
+                    <option></option>
+                    <option value="001">Option 001</option>
+                    <option value="002">Option 002</option>
+                    <option value="003">Option 003</option>
+                    <option value="004">Option 004</option>
+                    <option value="005">Option 005</option>
+                </select>
+            </fieldset>
+
+            <fieldset>
+                <legend>Textarea Required</legend>
+                <textarea name="test1201" required="required">Word</textarea>
+            </fieldset>
+
+            <fieldset>
+                <legend>Textarea Minlength = 3</legend>
+                <textarea name="test1202" required="required" data-validation="min:3">Fine</textarea>
+            </fieldset>
+
+            <fieldset>
+                <legend>Textarea Minlength = 5 and Maxlength = 10</legend>
+                <textarea name="test1203" required="required" data-validation="min:5|max:10">Very Cool</textarea>
+            </fieldset>
+
+            <fieldset>
+                <legend>CPF</legend>
+                <input type="text" name="test1301" required="required" data-validation="cpf" value="123.456.789-09" class="right"/>
+            </fieldset>
+
+            <fieldset>
+                <legend>CNPJ</legend>
+                <input type="text" name="test1401" required="required" data-validation="cnpj" value="56.855.350/0001-94" class="right"/>
+            </fieldset>
+
+            <fieldset>
+                <legend>CEP</legend>
+                <input type="text" name="test1501" required="required" data-validation="digitsBetween:8,8" value="65.903-040" class="right" />
+                <input type="text" name="test1502" required="required" data-validation="digitsBetween:8,8" value="65903040" class="right" />
+                <input type="text" name="test1503" required="required" data-validation="digitsBetween:8,8" value="6590304" />
+                <input type="text" name="test1504" required="required" data-validation="digitsBetween:8,8" value="659030400" />
+            </fieldset>
+
+            <fieldset>
+                <legend>Phone</legend>
+                <input type="text" name="test1601" required="required" data-validation="digitsBetween:10,11" value="(16) 9977-8145" class="right"/>
+                <input type="text" name="test1602" required="required" data-validation="digitsBetween:10,11" value="16 999778145" />
+                <input type="text" name="test1603" required="required" data-validation="digitsBetween:10,11" value="16.99977-8145" />
+                <input type="text" name="test1604" required="required" data-validation="digitsBetween:10,11" value="169997781456" />
+            </fieldset>
+
+            <fieldset>
+                <legend>Float</legend>
+                <input type="text" name="test1701" required="required" data-validation="numeric" value="1000.14" class="right" />
+                <input type="text" name="test1702" required="required" data-validation="numeric:c" value="1000,14" class="right" />
+            </fieldset>
+
+            <br clear="all" />
             <button type="submit">Enviar</button>
         </form>
 
@@ -138,8 +269,8 @@
 
         <script type="text/javascript" src="src/validator.js"></script>
         <script type="text/javascript">
-            var form = document.forms[0];
-            var validator = new Validator(form, {}, function (errors) {
+            var form = document.forms[0],
+                validator = new Validator(form, {}, function () {
                 this.classList.add('error');
                 this.classList.remove('success');
             }, function () {
@@ -148,7 +279,7 @@
             });
             
             validator.validate();
-            
+
             document.forms[0].onsubmit = function () {
                 validator.validate();
                 return false;
