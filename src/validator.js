@@ -83,7 +83,6 @@ Validator.prototype.validate = function () {
                         }
 
                         if (!valid) {
-                            // element.errors[rule] = this._messages[rule];
                             element.errors[rule] = {
                                 'message': this._messages[rule],
                                 'rule': element.rules[rule]
@@ -130,11 +129,12 @@ Validator.prototype._setupRules = function () {
     // reset
     this._elements = [];
 
-    for (i; i < numElements; i += 1) {
+    for (i = 0; i < numElements; i += 1) {
         // Element name...
         name = elements[i].name;
 
-        if (element.type === 'submit' || elements[i].name === '' || names.hasOwnProperty(name)) {
+        if (element.type === 'submit' || elements[i].name === '' || names.hasOwnProperty(name) ||
+                elements[i].className.match(/\bnovalidate\b/)) {
             continue;
         }
 
