@@ -58,7 +58,7 @@ Validator.prototype.validate = function () {
         allValid = true,
         storeGlobalErros = false;
 
-    for (i; i < numElements; i += 1) {
+    for (i = 0; i < numElements; i += 1) {
         element = elements[i];
         element.errors = {};
         element.isValid = true;
@@ -206,7 +206,7 @@ Validator.prototype._extractRules = function (element) {
     if (element.hasAttribute('data-validation')) {
         custom_rules_txt = element.getAttribute('data-validation').split('|');
 
-        for (i; i < custom_rules_txt.length; i += 1) {
+        for (i = 0; i < custom_rules_txt.length; i += 1) {
             custom_rules_txt[i] = custom_rules_txt[i].split(':');
             ruleName = custom_rules_txt[i][0];
             ruleValues = (custom_rules_txt[i][1] !== undefined) ? custom_rules_txt[i][1].split(',') : true;
