@@ -1,5 +1,5 @@
 // Karma configuration
-// Generated on Sun Jul 20 2014 18:28:24 GMT-0300 (BRT)
+// Generated on Mon Jul 21 2014 16:26:04 GMT-0300 (Hora oficial do Brasil)
 
 module.exports = function(config) {
   config.set({
@@ -36,9 +36,6 @@ module.exports = function(config) {
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['progress', 'coverage'],
-
-
-    coverageReporter: { type : 'html', dir : 'coverage/' },
 
 
     // web server port
