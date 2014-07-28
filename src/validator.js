@@ -134,7 +134,8 @@ Validator.prototype._setupRules = function () {
         // Element name...
         name = elements[i].name;
 
-        if (element.type === 'submit' || elements[i].name === '' || names.hasOwnProperty(name)) {
+        if (element.type === 'submit' || elements[i].name === '' ||
+                names.hasOwnProperty(name) || elements[i].className.match(/\bnovalidate\b/)) {
             continue;
         }
 
@@ -266,7 +267,7 @@ Validator.prototype.rule_length = function (element, length) {
  */
 Validator.prototype.rule_notEmpty = function (element) {
     'use strict';
-    
+
     // Make trim in value.
     element.value = this._trim(element.value);
 
@@ -386,7 +387,6 @@ Validator.prototype.rule_email = function (element) {
  */
 Validator.prototype.rule_alphanumeric = function (element) {
     'use strict';
-
     var re = /^[a-z0-9]+$/i;
     if (!element.value.length) {
         return true;
@@ -401,7 +401,6 @@ Validator.prototype.rule_alphanumeric = function (element) {
  */
 Validator.prototype.rule_alpha = function (element) {
     'use strict';
-
     var re = /^[a-z]+$/i;
     if (!element.value.length) {
         return true;
@@ -570,7 +569,6 @@ Validator.prototype.rule_cnpj = function (element) {
  */
 Validator.prototype.rule_min = function (element, min, rules) {
     'use strict';
-
     if (min instanceof Array) {
         min = min[0];
     }
@@ -598,7 +596,6 @@ Validator.prototype.rule_min = function (element, min, rules) {
         return parseFloat(element.value) >= parseInt(min, 10);
 
     }
-
 
     return parseInt(element.value.length, 10) >= parseInt(min, 10);
 
@@ -640,7 +637,6 @@ Validator.prototype.rule_max = function (element, max, rules) {
         return parseFloat(element.value) <= parseInt(max);
 
     }
-
 
     return parseInt(element.value.length, 10) <= parseInt(max);
 };

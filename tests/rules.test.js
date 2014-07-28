@@ -163,6 +163,7 @@ QUnit.test('test rule min', function (assert) {
     rule = validator.rule_min;
 
     input.value = '';
+
     assert.equal(false, rule.call(validator, input, 10, {'numeric': true}));
 
     input.value = 5;
@@ -179,6 +180,7 @@ QUnit.test('test rule max', function (assert) {
     rule = validator.rule_max;
 
     input.value = '';
+
     assert.equal(false, rule.call(validator, input, 10, {'numeric': true}));
 
     input.value = 5;
