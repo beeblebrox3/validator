@@ -83,7 +83,6 @@ Validator.prototype.validate = function () {
                         }
 
                         if (!valid) {
-                            // element.errors[rule] = this._messages[rule];
                             element.errors[rule] = {
                                 'message': this._messages[rule],
                                 'rule': element.rules[rule]
@@ -134,8 +133,8 @@ Validator.prototype._setupRules = function () {
         // Element name...
         name = elements[i].name;
 
-        if (element.type === 'submit' || elements[i].name === '' ||
-                names.hasOwnProperty(name) || elements[i].className.match(/\bnovalidate\b/)) {
+        if (element.type === 'submit' || elements[i].name === '' || names.hasOwnProperty(name) ||
+            elements[i].className.match(/\bnovalidate\b/)) {
             continue;
         }
 
@@ -387,6 +386,7 @@ Validator.prototype.rule_email = function (element) {
  */
 Validator.prototype.rule_alphanumeric = function (element) {
     'use strict';
+
     var re = /^[a-z0-9]+$/i;
     if (!element.value.length) {
         return true;
@@ -401,6 +401,7 @@ Validator.prototype.rule_alphanumeric = function (element) {
  */
 Validator.prototype.rule_alpha = function (element) {
     'use strict';
+
     var re = /^[a-z]+$/i;
     if (!element.value.length) {
         return true;
@@ -569,6 +570,7 @@ Validator.prototype.rule_cnpj = function (element) {
  */
 Validator.prototype.rule_min = function (element, min, rules) {
     'use strict';
+
     if (min instanceof Array) {
         min = min[0];
     }
@@ -579,14 +581,8 @@ Validator.prototype.rule_min = function (element, min, rules) {
 
     // String...
     element.value = this._trim(element.value);
-
     // Numeric...
     if (rules.hasOwnProperty('numeric')) {
-
-        // Check if is a number...
-        if (!this.rule_numeric(element)) {
-            return false;
-        }
 
         // Check the comma validation...
         if (rules.numeric[0] === 'c') {
@@ -624,10 +620,6 @@ Validator.prototype.rule_max = function (element, max, rules) {
 
     // Numeric...
     if (rules.hasOwnProperty('numeric')) {
-
-        if (!this.rule_numeric(element)) {
-            return false;
-        }
 
         // Check the comma validation...
         if (rules.numeric[0] === 'c') {
@@ -688,5 +680,4 @@ Validator.prototype.rule_checked = function (element, range) {
 
     // If everything is fine!
     return true;
-
 };
