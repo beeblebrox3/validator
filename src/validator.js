@@ -25,8 +25,8 @@ function Validator(form, messages, onError, onSuccess) {
         digitsBetween: 'this is not a valid number',
         email: 'this field must be an valid e-mail address',
         length: 'this field must be an specific length',
-        min: 'this field is lower than allowed',
         max: 'this field is higher than allowed',
+        min: 'this field is lower than allowed',
         notEmpty: 'this field cannot be empty',
         numeric: 'this field must be a number'
     };
@@ -83,7 +83,6 @@ Validator.prototype.validate = function () {
                         }
 
                         if (!valid) {
-                            // element.errors[rule] = this._messages[rule];
                             element.errors[rule] = {
                                 'message': this._messages[rule],
                                 'rule': element.rules[rule]
@@ -135,7 +134,7 @@ Validator.prototype._setupRules = function () {
         name = elements[i].name;
 
         if (element.type === 'submit' || elements[i].name === '' ||
-                names.hasOwnProperty(name) || elements[i].className.match(/\bnovalidate\b/)) {
+            names.hasOwnProperty(name) || elements[i].className.match(/\bnovalidate\b/)) {
             continue;
         }
 
@@ -387,6 +386,7 @@ Validator.prototype.rule_email = function (element) {
  */
 Validator.prototype.rule_alphanumeric = function (element) {
     'use strict';
+
     var re = /^[a-z0-9]+$/i;
     if (!element.value.length) {
         return true;
@@ -401,6 +401,7 @@ Validator.prototype.rule_alphanumeric = function (element) {
  */
 Validator.prototype.rule_alpha = function (element) {
     'use strict';
+
     var re = /^[a-z]+$/i;
     if (!element.value.length) {
         return true;
@@ -569,6 +570,7 @@ Validator.prototype.rule_cnpj = function (element) {
  */
 Validator.prototype.rule_min = function (element, min, rules) {
     'use strict';
+
     if (min instanceof Array) {
         min = min[0];
     }
@@ -582,11 +584,6 @@ Validator.prototype.rule_min = function (element, min, rules) {
 
     // Numeric...
     if (rules.hasOwnProperty('numeric')) {
-
-        // Check if is a number...
-        if (!this.rule_numeric(element)) {
-            return false;
-        }
 
         // Check the comma validation...
         if (rules.numeric[0] === 'c') {
@@ -624,10 +621,6 @@ Validator.prototype.rule_max = function (element, max, rules) {
 
     // Numeric...
     if (rules.hasOwnProperty('numeric')) {
-
-        if (!this.rule_numeric(element)) {
-            return false;
-        }
 
         // Check the comma validation...
         if (rules.numeric[0] === 'c') {
