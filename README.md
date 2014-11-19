@@ -1,5 +1,7 @@
 # Validator
 
+![enter image description here](https://travis-ci.org/beeblebrox3/validator.svg)
+
 ## Summary
 This is a simple JavaScript tool to validate forms without use any other library/framework.
 
